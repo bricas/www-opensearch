@@ -1,4 +1,8 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.02  Sat Mar 26 14:14:58 JST 2005
+	- Added accessors for attributes
+	- Ficed POD
+
 0.01  Thu Mar 17 20:45:13 2005
 	- original version

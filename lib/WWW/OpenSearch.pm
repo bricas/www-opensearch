@@ -2,7 +2,7 @@ package WWW::OpenSearch;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use Carp;
 use Data::Page;
@@ -88,6 +88,15 @@ sub setup_query {
     $url;
 }
 
+my @cols = qw(
+Url Format ShortName LongName Description Tags Image SampleSearch
+Developer Contact SyndicationRight AdultContent
+);
+for my $col (@cols) {
+    no strict 'refs';
+    *$col = sub { shift->{$col} };
+}
+
 1;
 __END__
 
@@ -102,23 +111,23 @@ WWW::OpenSearch - Search A9 OpenSearch compatible engines
   my $url = "http://bulkfeeds.net/opensearch.xml";
   my $engine = WWW::OpenSearch->new($url);
 
-  my $name = $engine->{ShortName};
-  my @tags = $engine->{Tags};
+  my $name = $engine->ShortName;
+  my $tags = $engine->Tags;
 
   my $feed = $engine->search("iPod");
   for my $item (@{$feed->items}) {
       print $item->{description};
   }
 
-  # if you want to page through page 2 with 20 items in each page
-  # Note that some engine doesn't allow changing these values
+  # page through page 2 with 20 items in each page
+  # Note that some engines don't allow changing these values
   $engine->pager->entries_per_page(20);
   $engine->pager->current_page(2);
   my $feed = $engine->search("iPod");
 
 =head1 BETA
 
-This module is in beta version, which means its API interface and functionalities may be changes in future releases.
+This module is in beta version, which means its API interface and functionalities may be changed in future releases.
 
 =head1 DESCRIPTION
 

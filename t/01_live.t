@@ -14,7 +14,7 @@ use WWW::OpenSearch;
 
 my $engine = WWW::OpenSearch->new($url);
 ok $engine;
-ok $engine->{ShortName}, $engine->{ShoftName};
+ok $engine->ShortName, $engine->ShortName;
 
 my $feed = $engine->search("iPod");
 ok $feed;
