@@ -1,8 +1,12 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.03  Sun Jul 24 02:36:46 PDT 2005
+        - Hacked current_page so you can specify page number correctly
+          (Thanks to Naoya Ito)
+
 0.02  Sat Mar 26 14:14:58 JST 2005
 	- Added accessors for attributes
-	- Ficed POD
+	- Fixed POD
 
 0.01  Thu Mar 17 20:45:13 2005
 	- original version

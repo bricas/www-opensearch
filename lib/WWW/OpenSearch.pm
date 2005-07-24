@@ -2,7 +2,7 @@ package WWW::OpenSearch;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use Carp;
 use Data::Page;
@@ -81,7 +81,7 @@ sub setup_query {
     $data->{searchTerms} = uri_escape($query);
     $data->{count}       = $self->pager->entries_per_page;
     $data->{startIndex}  = $self->pager->first == 0 ? 0 : $self->pager->first - 1;
-    $data->{startPage}   = $self->pager->current_page;
+    $data->{startPage}   = $self->pager->{current_page}; # XXX hack
 
     my $url = $self->{Url}; # copy
     $url =~ s/{(searchTerms|count|startIndex|startPage)}/$data->{$1}/g;
