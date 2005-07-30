@@ -2,14 +2,23 @@ package WWW::OpenSearch;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use Carp;
 use Data::Page;
 use LWP::UserAgent;
 use URI::Escape;
-use XML::RSS;
-use XML::Simple;
+use XML::RSS::LibXML;
+use XML::LibXML;
+
+my @Cols = qw(
+Url Format ShortName LongName Description Tags Image SampleSearch
+Developer Contact SyndicationRight AdultContent
+);
+for my $col (@Cols) {
+    no strict 'refs';
+    *$col = sub { shift->{$col} };
+}
 
 sub new {
     my($class, $url) = @_;
@@ -36,15 +45,29 @@ sub fetch_description {
     croak "Error while fetching $url: ". $response->status_line
 	unless $response->is_success;
     eval {
-	my $data = XML::Simple::XMLin($response->content);
+	my $data = parse_description($response->content);
 	for my $attr (keys %$data) {
-	    next if $attr eq 'xmlns';
 	    $self->{$attr} = $data->{$attr};
 	}
     };
     if ($@) {
 	croak "Error while parsing Description XML: $@";
     }
+}
+
+sub parse_description {
+    my $xml = shift;
+    my $parser = XML::LibXML->new;
+    my $doc = $parser->parse_string($xml);
+    my $nodename = $doc->documentElement->nodeName;
+    croak "Node should be OpenSearchDescription: $nodename"
+        if $nodename ne "OpenSearchDescription";
+    my %data;
+    for my $col (@Cols) {
+        my $node = $doc->documentElement->getChildrenByTagName($col);
+        $data{$col} = $node->string_value if $node;
+    }
+    \%data;
 }
 
 sub search {
@@ -57,7 +80,7 @@ sub search {
 
     my $rss;
     eval {
-	$rss = XML::RSS->new();
+	$rss = XML::RSS::LibXML->new();
 	$rss->add_module(
 	    prefix => "openSearch",
 	    uri => "http://a9.com/-/spec/opensearchrss/1.0/",
@@ -86,15 +109,6 @@ sub setup_query {
     my $url = $self->{Url}; # copy
     $url =~ s/{(searchTerms|count|startIndex|startPage)}/$data->{$1}/g;
     $url;
-}
-
-my @cols = qw(
-Url Format ShortName LongName Description Tags Image SampleSearch
-Developer Contact SyndicationRight AdultContent
-);
-for my $col (@cols) {
-    no strict 'refs';
-    *$col = sub { shift->{$col} };
 }
 
 1;
@@ -142,6 +156,6 @@ it under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-L<XML::Simple>, L<XML::RSS>, L<Data::Page>, L<LWP>
+L<XML::LibXML>, L<XML::RSS::LibXML>, L<Data::Page>, L<LWP>
 
 =cut
