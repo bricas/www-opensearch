@@ -2,7 +2,7 @@ package WWW::OpenSearch;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use Carp;
 use Data::Page;
@@ -13,7 +13,7 @@ use XML::LibXML;
 
 my @Cols = qw(
 Url Format ShortName LongName Description Tags Image SampleSearch
-Developer Contact SyndicationRight AdultContent
+Developer Contact SyndicationRight AdultContent Query
 );
 for my $col (@Cols) {
     no strict 'refs';
@@ -45,7 +45,7 @@ sub fetch_description {
     croak "Error while fetching $url: ". $response->status_line
 	unless $response->is_success;
     eval {
-	my $data = parse_description($response->content);
+	my $data = $self->parse_description($response->content);
 	for my $attr (keys %$data) {
 	    $self->{$attr} = $data->{$attr};
 	}
@@ -55,18 +55,49 @@ sub fetch_description {
     }
 }
 
+sub version {
+    my $self = shift;
+    $self->{version} = shift if @_;
+    $self->{version};
+}
+
 sub parse_description {
-    my $xml = shift;
+    my $self = shift;
+    my($xml) = @_;
     my $parser = XML::LibXML->new;
     my $doc = $parser->parse_string($xml);
-    my $nodename = $doc->documentElement->nodeName;
+    my $element  = $doc->documentElement;
+    my $nodename = $element->nodeName;
     croak "Node should be OpenSearchDescription: $nodename"
         if $nodename ne "OpenSearchDescription";
+
+    my $ns = $element->getNamespace->value;
+    if ($ns eq "http://a9.com/-/spec/opensearch/1.1/") {
+        $self->version("1.1");
+    } else {
+        $self->version("1.0");
+    }
+
     my %data;
     for my $col (@Cols) {
-        my $node = $doc->documentElement->getChildrenByTagName($col);
-        $data{$col} = $node->string_value if $node;
+        my $node = $doc->documentElement->getChildrenByTagName($col) or next;
+        if ($self->version eq '1.1' && $col eq 'Url') {
+            my $urlnode = ($node->get_nodelist)[0];
+            my $type = $urlnode->getAttributeNode('type')->value;
+            if ($type ne 'application/rss+xml') {
+                croak "Url/\@type $type is not supported by this module. It should be application/rss+xml";
+            }
+            $data{$col} = $urlnode->getAttributeNode('template')->value;
+            $data{$col} =~ s/\?}/}/g; # optional
+        } elsif ($self->version eq '1.1' && $col eq 'Query') {
+            my $thisnode = ($node->get_nodelist)[0];
+            next if $thisnode->getAttributeNode('role')->value eq 'example';
+            $data{SampleSearch} = $thisnode->getAttributeNode('searchTerms')->value;
+        } else {
+            $data{$col} = $node->string_value;
+        }
     }
+
     \%data;
 }
 

@@ -6,3 +6,4 @@ README
 t/00_compile.t
 t/01_live.t
 t/02_paginate.t
+META.yml                                 Module meta-data (added by MakeMaker)
