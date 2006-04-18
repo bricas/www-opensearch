@@ -1,0 +1,22 @@
+Revision history for Perl extension WWW::OpenSearch
+
+0.05  Mon Jan  9 18:30:18 UTC 2006
+        - Added partial support of OpenSearch 1.1. There's no API change and
+          old elements just work as before, with 1.1 OpenSearch document as
+          well. See http://opensearch.a9.com/docs/upgrading10.jsp
+          (Thanks to Masaaki Hirose)
+          
+0.04  Sat Jul 29 18:34:31 PDT 2005
+        - Drop off XML::Simple for efficiency.
+          LibXMLify everything. Now you need XML::RSS::LibXML 
+
+0.03  Sun Jul 24 02:36:46 PDT 2005
+        - Hacked current_page so you can specify page number correctly
+          (Thanks to Naoya Ito)
+
+0.02  Sat Mar 26 14:14:58 JST 2005
+	- Added accessors for attributes
+	- Fixed POD
+
+0.01  Thu Mar 17 20:45:13 2005
+	- original version

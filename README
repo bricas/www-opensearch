@@ -1,0 +1,40 @@
+NAME
+    WWW::OpenSearch - Search A9 OpenSearch compatible engines
+
+SYNOPSIS
+      use WWW::OpenSearch;
+
+      my $url = "http://bulkfeeds.net/opensearch.xml";
+      my $engine = WWW::OpenSearch->new($url);
+
+      my $name = $engine->ShortName;
+      my $tags = $engine->Tags;
+
+      my $feed = $engine->search("iPod");
+      for my $item (@{$feed->items}) {
+          print $item->{description};
+      }
+
+      # page through page 2 with 20 items in each page
+      # Note that some engines don't allow changing these values
+      $engine->pager->entries_per_page(20);
+      $engine->pager->current_page(2);
+      my $feed = $engine->search("iPod");
+
+BETA
+    This module is in beta version, which means its API interface and
+    functionalities may be changed in future releases.
+
+DESCRIPTION
+    WWW::OpenSearch is a module to search A9's OpenSearch compatible search
+    engines. See http://opensearch.a9.com/ for details.
+
+AUTHOR
+    Tatsuhiko Miyagawa <miyagawa@bulknews.net>
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+SEE ALSO
+    XML::Simple, XML::RSS, Data::Page, LWP
+
