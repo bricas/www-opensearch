@@ -36,5 +36,5 @@ AUTHOR
     under the same terms as Perl itself.
 
 SEE ALSO
-    XML::Simple, XML::RSS, Data::Page, LWP
+    XML::LibXML, XML::RSS::LibXML, Data::Page, LWP
 
