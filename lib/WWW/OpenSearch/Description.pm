@@ -18,6 +18,113 @@ my @columns = qw(
 
 __PACKAGE__->mk_accessors( qw( version ns ), map { lc } @columns );
 
+=head1 NAME
+
+WWW::OpenSearch::Description - Encapsulate an OpenSearch Description
+provided by an A9 OpenSearch compatible engine
+
+=head1 SYNOPSIS
+    
+    use WWW::OpenSearch;
+    
+    my $url = "http://bulkfeeds.net/opensearch.xml";
+    my $engine = WWW::OpenSearch->new($url);
+    my $description = $engine->description;
+    
+    my $format   = $description->Format;   # or $description->format
+    my $longname = $description->LongName; # or $description->longname
+    
+=head1 DESCRIPTION
+
+WWW::OpenSearch::Description is a module designed to encapsulate an
+OpenSearch Description provided by an A9 OpenSearch compatible engine.
+See http://opensearch.a9.com/spec/1.1/description/ for details.
+
+=head1 CONSTRUCTOR
+
+=head2 new( [ $xml ] )
+
+Constructs a new instance of WWW::OpenSearch::Description. If scalar
+parameter $xml is provided, data will be automatically loaded from it
+using load( $xml ).
+
+=head1 METHODS
+
+=head2 load( $xml )
+
+Loads description data by parsing provided argument using XML::LibXML.
+
+=head2 get_best_url( )
+
+Attempts to retrieve the best URL associated with this description, based
+on the following content types (from most preferred to least preferred):
+
+=over 4
+
+=item * application/atom+xml
+
+=item * application/rss+xml
+
+=item * text/xml
+
+=back
+
+=head2 get_url_by_type( $type )
+
+Retrieves the first WWW::OpenSearch::URL associated with this description
+whose type is equal to $type.
+
+=head1 ACCESSORS
+
+=head2 version( )
+
+=head2 ns( )
+
+=head2 AdultContent( )
+
+=head2 Contact( )
+
+=head2 Description( )
+
+=head2 Developer( )
+
+=head2 Format( )
+
+=head2 Image( )
+
+=head2 LongName( )
+
+=head2 Query( )
+
+=head2 SampleSearch( )
+
+=head2 ShortName( )
+
+=head2 SyndicationRight( )
+
+=head2 Tags( )
+
+=head2 Url( )
+
+=head1 AUTHOR
+
+=over 4
+
+=item * Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
+
+=item * Brian Cassidy E<lt>bricas@cpan.orgE<gt>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2006 by Tatsuhiko Miyagawa and Brian Cassidy
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+
+=cut
+
 for( @columns ) {
     no strict 'refs';
     my $col = lc;

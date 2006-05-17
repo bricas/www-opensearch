@@ -10,6 +10,98 @@ use Data::Page;
 
 __PACKAGE__->mk_accessors( qw( feed pager parent ) );
 
+=head1 NAME
+
+WWW::OpenSearch::Response - Encapsulate a response received from
+an A9 OpenSearch compatible engine
+
+=head1 SYNOPSIS
+    
+    use WWW::OpenSearch;
+    
+    my $url = "http://bulkfeeds.net/opensearch.xml";
+    my $engine = WWW::OpenSearch->new($url);
+    
+    # Retrieve page 4 of search results for "iPod"
+    my $response = $engine->search("iPod",{ startPage => 4 });
+    for my $item (@{$response->feed->items}) {
+        print $item->{description};
+    }
+    
+    # Retrieve page 3 of results
+    $response = $response->previous_page;
+    
+    # Retrieve page 5 of results
+    $response = $response->next_page;
+    
+=head1 DESCRIPTION
+
+WWW::OpenSearch::Response is a module designed to encapsulate a
+response received from an A9 OpenSearch compatible engine.
+See http://opensearch.a9.com/spec/1.1/response/ for details.
+
+=head1 CONSTRUCTOR
+
+=head2 new( $parent, $response )
+
+Constructs a new instance of WWW::OpenSearch::Response. Arguments
+include the WWW::OpenSearch object which initiated the search (parent)
+and the HTTP::Response returned by the search request.
+
+=head1 METHODS
+
+=head2 parse_response( )
+
+Parses the content of the HTTP response using XML::Feed. If successful,
+parse_feed( ) is also called.
+
+=head2 parse_feed( )
+
+Parses the XML::Feed originally parsed from the HTTP response content.
+Sets the pager object appropriately.
+
+=head2 previous_page( ) / next_page( )
+
+Performs another search on the parent object, returning a
+WWW::OpenSearch::Response instance containing the previous/next page
+of results. If the current response includes a &lt;link rel="previous/next"
+href="..." /&gt; tag, the page will simply be the parsed content of the URL
+specified by the tag's href attribute. However, if the current response does not
+include the appropriate link, a new query is constructed using the startPage
+or startIndex query arguments.
+
+=head2 _get_link( $type )
+
+Gets the href attribute of the first link whose rel attribute
+is equal to $type.
+
+=head1 ACCESSORS
+
+=head2 feed( )
+
+=head2 pager( )
+
+=head2 parent( )
+
+=head1 AUTHOR
+
+=over 4
+
+=item * Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
+
+=item * Brian Cassidy E<lt>bricas@cpan.orgE<gt>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2006 by Tatsuhiko Miyagawa and Brian Cassidy
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+
+=cut
+
 sub new {
     my $class    = shift;
     my $parent   = shift;
@@ -72,7 +164,7 @@ sub parse_feed {
 }
 
 # TODO
-# handle pervious/next page on POST
+# handle previous/next page on POST
 
 sub next_page {
     my $self  = shift;
