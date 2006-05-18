@@ -12,7 +12,7 @@ use WWW::OpenSearch::Description;
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
-our $VERSION = '0.06';
+our $VERSION = '0.06_01';
 
 =head1 NAME
 
