@@ -9,7 +9,7 @@ __PACKAGE__->mk_accessors( qw( type template method macros ) );
 
 =head1 NAME
 
-WWW::OpenSearch::URL
+WWW::OpenSearch::Url
 
 =head1 SYNOPSIS
 
