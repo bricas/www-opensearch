@@ -1,5 +1,11 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.06  Thu May 18 2006
+        - Complete re-write to handle OpenSearch 1.1/Atom
+        - Now uses XML::Feed to abstract RSS and Atom
+        - Improved OpenSearch Description/Url handling
+        - Encapsulate returns in a Response object
+
 0.05  Mon Jan  9 18:30:18 UTC 2006
         - Added partial support of OpenSearch 1.1. There's no API change and
           old elements just work as before, with 1.1 OpenSearch document as
