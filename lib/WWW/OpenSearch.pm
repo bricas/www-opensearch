@@ -9,6 +9,7 @@ use Carp;
 use LWP::UserAgent;
 use WWW::OpenSearch::Response;
 use WWW::OpenSearch::Description;
+use Encode qw( _utf8_off ); 
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
@@ -144,6 +145,7 @@ sub search {
 
     $params ||= { };
     $params->{ searchTerms } = $query;
+    _utf8_off( $params->{ searchTerms } ); 
     
     my $url = $self->description->get_best_url;
     return $self->do_search( $url->prepare_query( $params ), $url->method );

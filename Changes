@@ -1,5 +1,8 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.06_02 Mon Jul 10 2006
+        - turn utf8 flag off for queries
+
 0.06_01 Thu May 18 2006
         - Complete re-write to handle OpenSearch 1.1/Atom
         - Now uses XML::Feed to abstract RSS and Atom
