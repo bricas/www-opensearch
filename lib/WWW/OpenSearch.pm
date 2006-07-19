@@ -6,7 +6,6 @@ use warnings;
 use base qw( Class::Accessor::Fast );
 
 use Carp;
-use LWP::UserAgent;
 use WWW::OpenSearch::Response;
 use WWW::OpenSearch::Description;
 use Encode qw( _utf8_off ); 
@@ -47,11 +46,13 @@ WWW::OpenSearch is a module to search A9's OpenSearch compatible search engines.
 
 =head1 CONSTRUCTOR
 
-=head2 new( $url )
+=head2 new( $url [, $useragent] )
 
 Constructs a new instance of WWW::OpenSearch using the given
 URL as the location of the engine's OpenSearch Description
-document (retrievable via the description_url accessor).
+document (retrievable via the description_url accessor). Pass any
+LWP::UserAgent compatible object if you wish to override the default
+agent.
 
 =head1 METHODS
 
@@ -113,14 +114,19 @@ it under the same terms as Perl itself.
 =cut
 
 sub new {
-    my( $class, $url ) = @_;
+    my( $class, $url, $agent ) = @_;
     
     croak( "No OpenSearch Description url provided" ) unless $url;
     
     my $self = $class->SUPER::new;
 
+    unless( $agent ) {
+        require LWP::UserAgent;
+        $agent = LWP::UserAgent->new( agent => join( '/', ref $self, $VERSION ) );
+    }
+
     $self->description_url( $url );
-    $self->agent( LWP::UserAgent->new( agent => join( '/', ref $self, $VERSION ) ) );
+    $self->agent( $agent );
 
     $self->fetch_description;
     
