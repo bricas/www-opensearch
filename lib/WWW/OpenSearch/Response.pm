@@ -146,8 +146,6 @@ sub parse_feed {
         my $perpage = $atom->get( $ns, 'itemsPerPage' );
         my $start   = $atom->get( $ns, 'startIndex' );
         
-        undef $start if defined $start && $start eq 'null';
-        
         $pager->total_entries( $total );
         $pager->entries_per_page( $perpage );
         $pager->current_page( $start ? ( $start - 1 ) / $perpage + 1 : 0 )

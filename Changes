@@ -1,6 +1,7 @@
 Revision history for Perl extension WWW::OpenSearch
 
 0.06_02 Mon Jul 10 2006
+        - fix undef warning
         - turn utf8 flag off for queries
 
 0.06_01 Thu May 18 2006
