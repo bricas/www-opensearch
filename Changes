@@ -1,6 +1,7 @@
 Revision history for Perl extension WWW::OpenSearch
 
 0.06_02 Mon Jul 10 2006
+        - update XML::Atom calls to latest release API
         - added option to override the useragent from new()
         - fix undef warning
         - turn utf8 flag off for queries
@@ -26,8 +27,8 @@ Revision history for Perl extension WWW::OpenSearch
           (Thanks to Naoya Ito)
 
 0.02  Sat Mar 26 14:14:58 JST 2005
-	- Added accessors for attributes
-	- Fixed POD
+        - Added accessors for attributes
+        - Fixed POD
 
 0.01  Thu Mar 17 20:45:13 2005
-	- original version
+        - original version
