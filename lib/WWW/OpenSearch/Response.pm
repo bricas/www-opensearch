@@ -6,6 +6,7 @@ use warnings;
 use base qw( HTTP::Response Class::Accessor::Fast );
 
 use XML::Feed;
+use URI;
 use Data::Page;
 
 __PACKAGE__->mk_accessors( qw( feed pager parent ) );
@@ -161,61 +162,58 @@ sub parse_feed {
     $self->pager( $pager );
 }
 
-# TODO
-# handle previous/next page on POST
-
 sub next_page {
     my $self  = shift;
-    my $pager = $self->pager;
-    my $page  = $pager->next_page;
-    return unless $page;
-    
-    my $link = $self->_get_link( 'next' );
-    return $self->parent->do_search( $link, $self->request->method ) if $link;
-    
-    my $url   = $self->request->uri->clone;
-    my %query = $url->query_form;
-    my $param;
-
-    my $template = $self->parent->description->get_best_url;
-
-    if( $param = $template->macros->{ startPage } ) {
-        $query{ $param } = $pager->next_page
-    }
-    elsif( $param = $template->macros->{ startIndex } ) {
-        $query{ $param } ? $query{ $param } += $pager->entries_per_page
-                         : $query{ $param }  = $pager->entries_per_page + 1;
-    }
-
-    $url->query_form( \%query );
-    return $self->parent->do_search( $url, $self->request->method );
+    return $self->_get_page( 'next' );
 }
 
 sub previous_page {
     my $self  = shift;
-    my $pager = $self->pager;
-    my $page  = $pager->previous_page;
-    return unless $page;
+    return $self->_get_page( 'previous' );
+}
 
-    my $link = $self->_get_link( 'previous' );
-    return $self->parent->do_search( $link, $self->request->method ) if $link;
+sub _get_page {
+    my( $self, $direction ) = @_;    
+    my $pager       = $self->pager;
+    my $pagermethod = "${direction}_page";
+    my $page        = $pager->$pagermethod;
+    return unless $page;
     
-    my $url   = $self->request->uri->clone;
-    my %query = $url->query_form;
-    my $param;
+    my $request = $self->request;
+    my $method  = lc $request->method;
+
+    if( $method ne 'post' ) { # force query build on POST
+        my $link = $self->_get_link( $direction );
+        return $self->parent->do_search( $link, $method ) if $link;
+    }
     
     my $template = $self->parent->description->get_best_url;
-    
+    my( $param, $query );
+    if( $method eq 'post' ) {
+        my $uri = URI->new( 'http://foo.com/?' . $request->content );
+        $query = { $uri->query_form };
+    }
+    else {
+        $query = { $self->request->uri->query_form };
+    }
+
     if( $param = $template->macros->{ startPage } ) {
-        $query{ $param } = $pager->previous_page
+        $query->{ $param } = $pager->$pagermethod
     }
     elsif( $param = $template->macros->{ startIndex } ) {
-        $query{ $param } ? $query{ $param } -= $pager->entries_per_page
-                         : $query{ $param }  = 1;
+        if( $query->{ $param } ) {
+            $query->{ $param } = $direction eq 'previous'
+                ? $query->{ $param } -= $pager->entries_per_page
+                : $query->{ $param } += $pager->entries_per_page;
+        }
+        else {
+            $query->{ $param } = $direction eq 'previous'
+                ? 1
+                : $pager->entries_per_page + 1;
+        }
     }
-    
-    $url->query_form( \%query );
-    return $self->parent->do_search( $url, $self->request->method );
+
+    return $self->parent->do_search( $template->prepare_query( $query ), $method );
 }
 
 sub _get_link {

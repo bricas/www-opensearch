@@ -5,7 +5,7 @@ use base qw( Class::Accessor::Fast );
 use URI;
 use URI::Escape;
 
-__PACKAGE__->mk_accessors( qw( type template method macros ) );
+__PACKAGE__->mk_accessors( qw( type template method params macros ) );
 
 =head1 NAME
 
@@ -54,13 +54,16 @@ sub new {
     
     my $self = $class->SUPER::new( \%options );
     $self->parse_macros;
+
     return $self;
 }
 
 sub parse_macros {
     my $self = shift;
     
-    my %query = $self->template->query_form;
+    my %query = $self->method eq 'post'
+        ? %{ $self->params }
+        : $self->template->query_form;
     
     my %macros;
     for( keys %query ) {
@@ -75,7 +78,6 @@ sub parse_macros {
 sub prepare_query {
     my( $self, $params ) = @_;
     my $url   = $self->template->clone;
-    my %query = $url->query_form;
     
     $params->{ startIndex     } ||= 1;
     $params->{ startPage      } ||= 1;
@@ -84,11 +86,22 @@ sub prepare_query {
     $params->{ inputEncoding  } ||= 'UTF-8';
     
     my $macros = $self->macros;
+
+    # attempt to handle POST
+    if( $self->method eq 'post' ) {
+        my $post = $self->params;
+        for( keys %macros ) {
+            $post->{ $macros->{ $_ } } = $params->{ $_ };
+        }
+        return [ $url, $post ];
+    }
+
+    my $query = { $url->query_form };
     for( keys %$macros ) {
-        $query{ $macros->{ $_ } } = $params->{ $_ };
+        $query->{ $macros->{ $_ } } = $params->{ $_ };
     }
     
-    $url->query_form( \%query );
+    $url->query_form( $query );
     return $url;
 }
 

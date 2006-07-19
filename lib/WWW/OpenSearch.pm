@@ -164,9 +164,7 @@ sub do_search {
     
     my $response;
     if( $method eq 'post' ) {
-        my %form = $url->query_form;
-        $url->query_form( { } );
-        $response = $self->agent->post( $url, \%form );
+        $response = $self->agent->post( @$url );
     }
     else {
         $response = $self->agent->$method( $url );
