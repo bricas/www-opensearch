@@ -1,6 +1,8 @@
 Revision history for Perl extension WWW::OpenSearch
 
 0.06_02 Mon Jul 10 2006
+        - added tests
+        - updated available description info
         - try to handle POST urls better
         - update XML::Atom calls to latest release API
         - added option to override the useragent from new()

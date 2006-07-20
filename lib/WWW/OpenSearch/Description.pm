@@ -10,10 +10,11 @@ use XML::LibXML;
 use WWW::OpenSearch::Url;
 
 my @columns = qw(
-    AdultContent Contact   Description      Developer
-    Format       Image     LongName         Query
-    SampleSearch ShortName SyndicationRight Tags
-    Url
+    AdultContent Contact     Description      Developer
+    Format       Image       LongName         Query
+    SampleSearch ShortName   SyndicationRight Tags
+    Url          Attribution InputEncoding    OutputEncoding
+    Language
 );
 
 __PACKAGE__->mk_accessors( qw( version ns ), map { lc } @columns );
@@ -53,6 +54,10 @@ using load( $xml ).
 =head2 load( $xml )
 
 Loads description data by parsing provided argument using XML::LibXML.
+
+=head2 urls( )
+
+Return all of the urls associated with this description in an array.
 
 =head2 get_best_url( )
 
@@ -224,12 +229,17 @@ sub get_url_by_type {
     my $type = shift;
     
     my $template;
-    for( @{ $self->url } ) {
+    for( $self->urls ) {
         $template = $_ if $_->type eq $type;
         last;
     };
     
     return $template;
+}
+
+sub urls {
+    my $self = shift;
+    return @{ $self->url };
 }
 
 1;
