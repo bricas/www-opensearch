@@ -1,9 +1,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 26;
+use Test::More tests => 27;
 
 use_ok( 'WWW::OpenSearch::Description' );
+use_ok( 'WWW::OpenSearch::Url' );
 
 {
     my $description = q(<?xml version="1.0" encoding="UTF-8"?>
