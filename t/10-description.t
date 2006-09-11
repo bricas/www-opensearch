@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 38;
+use Test::More tests => 48;
 
 use_ok( 'WWW::OpenSearch::Description' );
 
@@ -27,7 +27,7 @@ use_ok( 'WWW::OpenSearch::Description' );
     is( $osd->contact, 'admin@example.com' );
 
     # count the urls
-    is( $osd->urls, 1 );
+    is( $osd->urls, 1, 'number of url objects' );
 }
 
 # complex 1.1 OSD
@@ -83,15 +83,24 @@ use_ok( 'WWW::OpenSearch::Description' );
     is( $osd->adultcontent, 'false' );
     is( $osd->syndicationright, 'open' );
 
-    TODO: {
-        local $TODO = 'Test Query and Image';
+    my $queries = $osd->query;
+    is( scalar @$queries, 1, 'number of query objects' );
+    is( $queries->[ 0 ]->role, 'example' );
+    is( $queries->[ 0 ]->searchTerms, 'cat' );
 
-        is( $osd->query, undef );
-        is( $osd->image, undef );
-    };
+    my $images = $osd->image;
+    is( scalar @$images, 2, 'number of image objects' );
+    is( $images->[ 0 ]->height, 64 );
+    is( $images->[ 0 ]->width, 64 );
+    is( $images->[ 0 ]->type, 'image/png' );
+    is( $images->[ 0 ]->url, 'http://example.com/websearch.png' );
+    is( $images->[ 1 ]->height, 16 );
+    is( $images->[ 1 ]->width, 16 );
+    is( $images->[ 1 ]->type, 'image/vnd.microsoft.icon' );
+    is( $images->[ 1 ]->url, 'http://example.com/websearch.ico' );
 
     # count the urls
-    is( $osd->urls, 3 );
+    is( $osd->urls, 3, 'number of url objects' );
 }
 
 # 1.0 OSD

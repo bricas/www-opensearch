@@ -9,7 +9,7 @@ __PACKAGE__->mk_accessors( qw( type template method params macros ) );
 
 =head1 NAME
 
-WWW::OpenSearch::Url
+WWW::OpenSearch::Url - Object to represent a target URL
 
 =head1 SYNOPSIS
 
@@ -26,6 +26,20 @@ WWW::OpenSearch::Url
 =head2 prepare_query( [ \%params ] )
 
 =head1 ACCESSORS
+
+=over 4
+
+=item * type
+
+=item * template
+
+=item * method
+
+=item * params
+
+=item * macros
+
+=back
 
 =head1 AUTHOR
 

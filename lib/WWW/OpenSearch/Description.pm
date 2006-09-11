@@ -8,6 +8,8 @@ use base qw( Class::Accessor::Fast );
 use Carp;
 use XML::LibXML;
 use WWW::OpenSearch::Url;
+use WWW::OpenSearch::Query;
+use WWW::OpenSearch::Image;
 
 my @columns = qw(
     AdultContent Contact     Description      Developer
@@ -201,9 +203,31 @@ sub load {
             $self->Url( \@url );
         }
         elsif( $version eq '1.1' and $column eq 'Query' ) {
-            my $query = ( $node->get_nodelist )[ 0 ];
-            next if $query->getAttributeNode( 'role' )->value eq 'example';
-            $self->SampleSearch( $query->getAttributeNode( 'searchTerms' )->value );
+            my $queries = $self->query || [];
+
+            for my $node ( $node->get_nodelist ) {
+                my $query = WWW::OpenSearch::Query->new( {
+                    map { $_ => $node->getAttributeNode( $_ )->value } qw( role searchTerms )
+                } );
+
+                push @$queries, $query;
+            }
+
+            $self->query( $queries );
+        }
+        elsif( $version eq '1.1' and $column eq 'Image' ) {
+            my $images = $self->image || [];
+
+            for my $node ( $node->get_nodelist ) {
+                my $image = WWW::OpenSearch::Image->new( {
+                    ( map { $_ => $node->getAttributeNode( $_ )->value } qw( height width type ) ),
+                    url => $node->string_value
+                } );
+
+                push @$images, $image;
+            }
+
+            $self->image( $images );
         }
         elsif( $version eq '1.0' and $column eq 'Format' ) {
             $self->Format( $node->string_value );
