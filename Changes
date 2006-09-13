@@ -1,5 +1,24 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.07    Mon Sep 11 2006
+        - inflate query and image fields to objects for OSD 1.1
+        - pod updates
+
+0.06_02 Thu Jul 20 2006
+        - added tests
+        - updated available description info
+        - try to handle POST urls better
+        - update XML::Atom calls to latest release API
+        - added option to override the useragent from new()
+        - fix undef warning
+        - turn utf8 flag off for queries
+
+0.06_01 Thu May 18 2006
+        - Complete re-write to handle OpenSearch 1.1/Atom
+        - Now uses XML::Feed to abstract RSS and Atom
+        - Improved OpenSearch Description/Url handling
+        - Encapsulate returns in a Response object
+
 0.05  Mon Jan  9 18:30:18 UTC 2006
         - Added partial support of OpenSearch 1.1. There's no API change and
           old elements just work as before, with 1.1 OpenSearch document as
@@ -15,8 +34,8 @@ Revision history for Perl extension WWW::OpenSearch
           (Thanks to Naoya Ito)
 
 0.02  Sat Mar 26 14:14:58 JST 2005
-	- Added accessors for attributes
-	- Fixed POD
+        - Added accessors for attributes
+        - Fixed POD
 
 0.01  Thu Mar 17 20:45:13 2005
-	- original version
+        - original version

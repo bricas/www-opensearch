@@ -14,13 +14,11 @@ use WWW::OpenSearch;
 
 my $engine = WWW::OpenSearch->new($url);
 ok $engine;
-ok $engine->ShortName, $engine->ShortName;
+ok $engine->description->shortname, $engine->description->shortname;
 
-my $feed = $engine->search("iPod");
-ok $feed;
-ok $feed->channel->{title}, $feed->channel->{title};
-ok $feed->channel->{link}, $feed->channel->{link};
-ok $engine->pager->entries_per_page, "items per page " . $engine->pager->entries_per_page;
-ok $engine->pager->total_entries, "total entries " . $engine->pager->total_entries;
-
-
+my $res = $engine->search("iPod");
+ok $res;
+ok $res->feed->title, $res->feed->title;
+ok $res->feed->link, $res->feed->link;
+ok $res->pager->entries_per_page, "items per page " . $res->pager->entries_per_page;
+ok $res->pager->total_entries, "total entries " . $res->pager->total_entries;
