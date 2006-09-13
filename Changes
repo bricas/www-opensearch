@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.08    Wed Sep 13 2006
+        - fix options attributes for Image
+        - added strict to Url object
+
 0.07    Mon Sep 11 2006
         - inflate query and image fields to objects for OSD 1.1
         - pod updates

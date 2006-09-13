@@ -220,7 +220,7 @@ sub load {
 
             for my $node ( $node->get_nodelist ) {
                 my $image = WWW::OpenSearch::Image->new( {
-                    ( map { $_ => $node->getAttributeNode( $_ )->value } qw( height width type ) ),
+                    ( map { my $attr = $node->getAttributeNode( $_ ); $attr ? ($_ => $attr->value) : () } qw( height width type ) ),
                     url => $node->string_value
                 } );
 
