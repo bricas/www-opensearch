@@ -224,7 +224,7 @@ sub _get_link {
     return unless $feed;
     
     for( $feed->link ) {
-        return $_->get( 'href' ) if $_->get( 'rel' ) eq $type;
+        return $_->href if $_->rel eq $type;
     }
 
     return;
