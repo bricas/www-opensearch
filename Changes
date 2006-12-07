@@ -1,6 +1,6 @@
 Revision history for Perl extension WWW::OpenSearch
 
-0.09    Thu Dev 07 2006
+0.09    Thu Dec 07 2006
         - fix link fetching from atom feeds
 
 0.08    Wed Sep 13 2006
