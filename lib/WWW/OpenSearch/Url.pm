@@ -5,10 +5,9 @@ use warnings;
 
 use base qw( Class::Accessor::Fast );
 
-use URI;
-use URI::Escape;
+use URI::Template;
 
-__PACKAGE__->mk_accessors( qw( type template method params macros ) );
+__PACKAGE__->mk_accessors( qw( type template method params ns ) );
 
 =head1 NAME
 
@@ -24,8 +23,6 @@ WWW::OpenSearch::Url - Object to represent a target URL
 
 =head1 METHODS
 
-=head2 parse_macros( )
-
 =head2 prepare_query( [ \%params ] )
 
 =head1 ACCESSORS
@@ -40,7 +37,7 @@ WWW::OpenSearch::Url - Object to represent a target URL
 
 =item * params
 
-=item * macros
+=item * ns
 
 =back
 
@@ -56,7 +53,7 @@ WWW::OpenSearch::Url - Object to represent a target URL
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006 by Tatsuhiko Miyagawa and Brian Cassidy
+Copyright 2007 by Tatsuhiko Miyagawa and Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
@@ -67,34 +64,16 @@ sub new {
     my( $class, %options ) = @_;
     
     $options{ method } ||= 'GET';
-    $options{ template } = URI->new( $options{ template } );
+    $options{ template } = URI::Template->new( $options{ template } );
     
     my $self = $class->SUPER::new( \%options );
-    $self->parse_macros;
 
     return $self;
 }
 
-sub parse_macros {
-    my $self = shift;
-    
-    my %query = $self->method eq 'post'
-        ? %{ $self->params }
-        : $self->template->query_form;
-    
-    my %macros;
-    for( keys %query ) {
-        if( $query{ $_ } =~ /^{(.+)}$/ ) {
-            $macros{ $1 } = $_;
-        }
-    }
-    
-    $self->macros( \%macros );
-}
-
 sub prepare_query {
     my( $self, $params ) = @_;
-    my $url   = $self->template->clone;
+    my $tmpl = $self->template;
     
     $params->{ startIndex     } ||= 1;
     $params->{ startPage      } ||= 1;
@@ -102,23 +81,19 @@ sub prepare_query {
     $params->{ outputEncoding } ||= 'UTF-8';
     $params->{ inputEncoding  } ||= 'UTF-8';
     
-    my $macros = $self->macros;
+    # fill the uri template
+    my $url = $tmpl->process( %$params );
 
     # attempt to handle POST
     if( $self->method eq 'post' ) {
         my $post = $self->params;
-        for( keys %$macros ) {
-            $post->{ $macros->{ $_ } } = $params->{ $_ };
+        for my $key ( keys %$post ) {
+            $post->{ $key } =~ s/{(.+)}/$params->{ $1 } || ''/eg;
         }
-        return [ $url, $post ];
-    }
 
-    my $query = { $url->query_form };
-    for( keys %$macros ) {
-        $query->{ $macros->{ $_ } } = $params->{ $_ };
+        return $url, [ %$post ];
     }
     
-    $url->query_form( $query );
     return $url;
 }
 

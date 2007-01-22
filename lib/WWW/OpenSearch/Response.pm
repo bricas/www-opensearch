@@ -6,10 +6,11 @@ use warnings;
 use base qw( HTTP::Response Class::Accessor::Fast );
 
 use XML::Feed;
-use URI;
 use Data::Page;
+use WWW::OpenSearch::Agent;
+use WWW::OpenSearch::Request;
 
-__PACKAGE__->mk_accessors( qw( feed pager parent ) );
+__PACKAGE__->mk_accessors( qw( feed pager ) );
 
 =head1 NAME
 
@@ -43,11 +44,10 @@ See http://opensearch.a9.com/spec/1.1/response/ for details.
 
 =head1 CONSTRUCTOR
 
-=head2 new( $parent, $response )
+=head2 new( $response )
 
-Constructs a new instance of WWW::OpenSearch::Response. Arguments
-include the WWW::OpenSearch object which initiated the search (parent)
-and the HTTP::Response returned by the search request.
+Constructs a new instance of WWW::OpenSearch::Response from the
+WWWW::OpenSearch:Response returned by the search request.
 
 =head1 METHODS
 
@@ -82,8 +82,6 @@ is equal to $type.
 
 =head2 pager( )
 
-=head2 parent( )
-
 =head1 AUTHOR
 
 =over 4
@@ -96,7 +94,7 @@ is equal to $type.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006 by Tatsuhiko Miyagawa and Brian Cassidy
+Copyright 2007 by Tatsuhiko Miyagawa and Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
@@ -105,12 +103,10 @@ it under the same terms as Perl itself.
 
 sub new {
     my $class    = shift;
-    my $parent   = shift;
     my $response = shift;
     
     my $self = bless $response, $class;
 
-    $self->parent( $parent );
     return $self unless $self->is_success;
     
     $self->parse_response;
@@ -136,7 +132,7 @@ sub parse_feed {
 
     my $feed   = $self->feed;
     my $format = $feed->format;
-    my $ns     = $self->parent->description->ns;
+    my $ns     = $self->request->opensearch_url->ns;
     
     # TODO
     # adapt these for any number of opensearch elements in
@@ -178,42 +174,56 @@ sub _get_page {
     my $pagermethod = "${direction}_page";
     my $page        = $pager->$pagermethod;
     return unless $page;
-    
-    my $request = $self->request;
-    my $method  = lc $request->method;
 
-    if( $method ne 'post' ) { # force query build on POST
-        my $link = $self->_get_link( $direction );
-        return $self->parent->do_search( $link, $method ) if $link;
-    }
-    
-    my $template = $self->parent->description->get_best_url;
-    my( $param, $query );
-    if( $method eq 'post' ) {
-        my $uri = URI->new( 'http://foo.com/?' . $request->content );
-        $query = { $uri->query_form };
-    }
-    else {
-        $query = { $self->request->uri->query_form };
-    }
+    my $params;
+    my $osu = $self->request->opensearch_url;
 
-    if( $param = $template->macros->{ startPage } ) {
-        $query->{ $param } = $pager->$pagermethod
-    }
-    elsif( $param = $template->macros->{ startIndex } ) {
-        if( $query->{ $param } ) {
-            $query->{ $param } = $direction eq 'previous'
-                ? $query->{ $param } -= $pager->entries_per_page
-                : $query->{ $param } += $pager->entries_per_page;
+#    this code is too fragile -- deparse depends on the order of query
+#    params and the like. best just to use the last query params and
+#    do the paging from there.
+#
+#    if( lc $osu->method ne 'post' ) { # force query build on POST
+#        my $link = $self->_get_link( $direction );
+#        if( $link ) {
+#            $params = $osu->deparse( $link );
+#        }
+#    }
+
+    # rebuild the query
+    if( !$params ) {
+        $params = $self->request->opensearch_params;
+
+        # handle paging via a page #
+        $params->{ startPage } = $page;
+
+        # handle paging via an index
+        if( exists $params->{ startIndex } ) {
+            # start index is pre-existing
+            if( $params->{ startIndex } ) {
+                if( $direction eq 'previous' ) {
+                    $params->{ startIndex } -= $pager->entries_per_page
+                }
+                else {
+                    $params->{ startIndex } += $pager->entries_per_page;
+                }
+            }
+            # start index did not exist previously
+            else {
+                if( $direction eq 'previous' ) {
+                    $params->{ startIndex } = 1
+                }
+                else {
+                    $params->{ startIndex } = $pager->entries_per_page + 1;
+                }
+
+            }
         }
-        else {
-            $query->{ $param } = $direction eq 'previous'
-                ? 1
-                : $pager->entries_per_page + 1;
-        }
     }
 
-    return $self->parent->do_search( $template->prepare_query( $query ), $method );
+    my $agent = WWW::OpenSearch::Agent->new;
+    return $agent->search( WWW::OpenSearch::Request->new(
+        $osu, $params
+    ) );
 }
 
 sub _get_link {

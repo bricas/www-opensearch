@@ -1,5 +1,5 @@
 use strict;
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 BEGIN {
     use_ok 'WWW::OpenSearch';
@@ -8,4 +8,6 @@ BEGIN {
     use_ok 'WWW::OpenSearch::Url';
     use_ok 'WWW::OpenSearch::Query';
     use_ok 'WWW::OpenSearch::Image';
+    use_ok 'WWW::OpenSearch::Agent';
+    use_ok 'WWW::OpenSearch::Request';
 }

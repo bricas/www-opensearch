@@ -6,13 +6,15 @@ use warnings;
 use base qw( Class::Accessor::Fast );
 
 use Carp;
-use WWW::OpenSearch::Response;
+use WWW::OpenSearch::Agent;
+use WWW::OpenSearch::Request;
 use WWW::OpenSearch::Description;
-use Encode qw( _utf8_off ); 
+
+use Encode (); 
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
-our $VERSION = '0.09';
+our $VERSION = '0.10_01';
 
 =head1 NAME
 
@@ -42,17 +44,16 @@ WWW::OpenSearch - Search A9 OpenSearch compatible engines
 
 =head1 DESCRIPTION
 
-WWW::OpenSearch is a module to search A9's OpenSearch compatible search engines. See http://opensearch.a9.com/ for details.
+WWW::OpenSearch is a module to search A9's OpenSearch compatible search
+engines. See http://opensearch.a9.com/ for details.
 
 =head1 CONSTRUCTOR
 
-=head2 new( $url [, $useragent] )
+=head2 new( $url )
 
 Constructs a new instance of WWW::OpenSearch using the given
 URL as the location of the engine's OpenSearch Description
-document (retrievable via the description_url accessor). Pass any
-LWP::UserAgent compatible object if you wish to override the default
-agent.
+document (retrievable via the description_url accessor).
 
 =head1 METHODS
 
@@ -106,7 +107,7 @@ WWW::OpenSearch::Response object. Method defaults to 'GET'.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006 by Tatsuhiko Miyagawa and Brian Cassidy
+Copyright 2007 by Tatsuhiko Miyagawa and Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
@@ -114,19 +115,14 @@ it under the same terms as Perl itself.
 =cut
 
 sub new {
-    my( $class, $url, $agent ) = @_;
+    my( $class, $url ) = @_;
     
     croak( "No OpenSearch Description url provided" ) unless $url;
     
     my $self = $class->SUPER::new;
 
-    unless( $agent ) {
-        require LWP::UserAgent;
-        $agent = LWP::UserAgent->new( agent => join( '/', ref $self, $VERSION ) );
-    }
-
     $self->description_url( $url );
-    $self->agent( $agent );
+    $self->agent( WWW::OpenSearch::Agent->new() );
 
     $self->fetch_description;
     
@@ -147,30 +143,14 @@ sub fetch_description {
 }
 
 sub search {
-    my( $self, $query, $params ) = @_;
+    my( $self, $query, $params, $url ) = @_;
 
     $params ||= { };
     $params->{ searchTerms } = $query;
-    _utf8_off( $params->{ searchTerms } ); 
+    Encode::_utf8_off( $params->{ searchTerms } ); 
     
-    my $url = $self->description->get_best_url;
-    return $self->do_search( $url->prepare_query( $params ), $url->method );
-}
-
-sub do_search {
-    my( $self, $url, $method ) = @_;
-    
-    $method = lc( $method ) || 'get';
-    
-    my $response;
-    if( $method eq 'post' ) {
-        $response = $self->agent->post( @$url );
-    }
-    else {
-        $response = $self->agent->$method( $url );
-    }
-    
-    return WWW::OpenSearch::Response->new( $self, $response );    
+    $url ||= $self->description->get_best_url;
+    return $self->agent->search( WWW::OpenSearch::Request->new( $url, $params ) );
 }
 
 1;

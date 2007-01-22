@@ -1,5 +1,24 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.10_01 Mon Jan 22 2007
+        - use URI::Template for parsing OSD uri templates
+        - added opensearch-specific Request and Agent classes
+        - un-break get_best_url()
+        - you can now pass a WWW::OpenSearch::Url to WWW::OpenSearch's
+          search() method
+        - added ns() (namespace) field to Url.pm
+        - re-worked paging to use the new Request object
+
+        [ THINGS THAT MAY BREAK YOUR CODE ]
+        - using URI::Template means some methods are now proxied to
+          that class
+        - removed agent argument in new() in OpenSearch.pm
+        - handling of POST requests in prepare_query() in Url.pm now 
+          returns data suitable for passing to HTTP::Request
+        - un-link Response.pm and the parent WWW::OpenSearch object --
+          a Response is now in the context of whatever
+          WWW::OpenSearch::Url was used
+
 0.09    Thu Dec 07 2006
         - fix link fetching from atom feeds
 

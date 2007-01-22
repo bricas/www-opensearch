@@ -125,7 +125,7 @@ whose type is equal to $type.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006 by Tatsuhiko Miyagawa and Brian Cassidy
+Copyright 2007 by Tatsuhiko Miyagawa and Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
@@ -165,12 +165,13 @@ sub load {
 
     my $ns = $element->getNamespace->value;
     my $version;
-    if( $ns eq 'http://a9.com/-/spec/opensearch/1.1/' ) {
-        $self->ns( $ns );
-        $version = '1.1';
+    if( $ns eq 'http://a9.com/-/spec/opensearchdescription/1.0/' ) {
+        $self->ns( 'http://a9.com/-/spec/opensearchrss/1.0/' );
+        $version = '1.0';
     }
     else {
-        $version = '1.0';
+        $self->ns( $ns );
+        ( $version ) = $ns =~ m{([^/]+)/?$};
     }
     $self->version( $version );
 
@@ -178,7 +179,7 @@ sub load {
         my $node = $doc->documentElement->getChildrenByTagName( $column ) or next;
         if( $column eq 'Url' ) {
             if( $version eq '1.0' ) {
-                $self->Url( [ WWW::OpenSearch::Url->new( template => $node->string_value, type => 'application/rss+xml' ) ] );
+                $self->Url( [ WWW::OpenSearch::Url->new( template => $node->string_value, type => 'application/rss+xml', ns => $self->ns ) ] );
                 next;
             }
 
@@ -198,7 +199,7 @@ sub load {
                     $params{ $param } = $value;
                 }
 
-                push @url, WWW::OpenSearch::Url->new( template => $url, type => $type, method => $method, params => \%params );
+                push @url, WWW::OpenSearch::Url->new( template => $url, type => $type, method => $method, params => \%params, ns => $self->ns );
             }
             $self->Url( \@url );
         }
@@ -229,10 +230,6 @@ sub load {
 
             $self->image( $images );
         }
-        elsif( $version eq '1.0' and $column eq 'Format' ) {
-            $self->Format( $node->string_value );
-            $self->ns( $self->Format );
-        }
         else {
             $self->$column( $node->string_value );
         }
@@ -252,13 +249,11 @@ sub get_url_by_type {
     my $self = shift;
     my $type = shift;
     
-    my $template;
     for( $self->urls ) {
-        $template = $_ if $_->type eq $type;
-        last;
+        return $_ if $_->type eq $type;
     };
     
-    return $template;
+    return;
 }
 
 sub urls {
