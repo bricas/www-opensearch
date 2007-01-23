@@ -14,7 +14,7 @@ use Encode ();
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
-our $VERSION = '0.10_01';
+our $VERSION = '0.10_02';
 
 =head1 NAME
 

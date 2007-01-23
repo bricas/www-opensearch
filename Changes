@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.10_02 Tue Jan 23 2007
+        - fix Request.pm to clone the extra attributes we've
+          added (Marc Tobias)
+
 0.10_01 Mon Jan 22 2007
         - use URI::Template for parsing OSD uri templates
         - added opensearch-specific Request and Agent classes
