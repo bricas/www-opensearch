@@ -2,6 +2,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'         => 'WWW::OpenSearch',
     'VERSION_FROM' => 'lib/WWW/OpenSearch.pm',
+    'LICENSE'      => 'perl',
     'PREREQ_PM'    => {
         'Data::Page'    => 2.00,
         'Encode'        => 0,
