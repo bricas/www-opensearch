@@ -74,9 +74,10 @@ sub new {
 sub prepare_query {
     my( $self, $params ) = @_;
     my $tmpl = $self->template;
-    
-    $params->{ startIndex     } ||= 1;
-    $params->{ startPage      } ||= 1;
+   
+    for( qw( startIndex startPage ) {
+        $params->{ $_ } = 1 if !defined $params->{ $_ };
+    }
     $params->{ language       } ||= '*';
     $params->{ outputEncoding } ||= 'UTF-8';
     $params->{ inputEncoding  } ||= 'UTF-8';
