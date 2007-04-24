@@ -75,7 +75,7 @@ sub prepare_query {
     my( $self, $params ) = @_;
     my $tmpl = $self->template;
    
-    for( qw( startIndex startPage ) {
+    for( qw( startIndex startPage ) ) {
         $params->{ $_ } = 1 if !defined $params->{ $_ };
     }
     $params->{ language       } ||= '*';
