@@ -1,5 +1,9 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.12    Tue May 01 2007
+        - switch from ||= to a "defined" idiom for some params
+        - switch to Module::Install
+
 0.11    Tue Apr 17 2007
         - added a simple OSD parsing test
 

@@ -14,7 +14,7 @@ use Encode ();
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 NAME
 
@@ -97,13 +97,9 @@ WWW::OpenSearch::Response object. Method defaults to 'GET'.
 
 =head1 AUTHOR
 
-=over 4
+Brian Cassidy E<lt>bricas@cpan.orgE<gt>
 
-=item * Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
-
-=item * Brian Cassidy E<lt>bricas@cpan.orgE<gt>
-
-=back
+Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

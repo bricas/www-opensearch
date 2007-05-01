@@ -1,18 +1,16 @@
-use ExtUtils::MakeMaker;
-WriteMakefile(
-    'NAME'          => 'WWW::OpenSearch',
-    'VERSION_FROM'  => 'lib/WWW/OpenSearch.pm',
-    'ABSTRACT_FROM' => 'lib/WWW/OpenSearch.pm',
-    'AUTHOR'        => 'Brian Cassidy <bricas@cpan.org>',
-    'LICENSE'      => 'perl',
-    'PREREQ_PM'    => {
-        'Data::Page'    => 2.00,
-        'Encode'        => 0,
-        'LWP'           => 5.60,
-        'Test::More'    => 0.32,
-        'URI'           => 0,
-        'XML::Feed'     => 0.08,
-        'XML::LibXML'   => 1.58,
-        'URI::Template' => 0,
-    },
-);
+use inc::Module::Install 0.65;
+
+name 'WWW-OpenSearch';
+all_from 'lib/WWW/OpenSearch.pm';
+
+requires 'Data::Page'  => 2.00;
+requires 'LWP'         => 5.60;
+requires 'XML::Feed'   => 0.08;
+requires 'XML::LibXML' => 1.58;
+requires 'Encode';
+requires 'URI';
+requires 'URI::Template';
+requires 'Test::More';
+
+auto_install;
+WriteAll;

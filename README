@@ -58,8 +58,9 @@ ACCESSORS
   agent( [$agent] )
   description( [$description] )
 AUTHOR
-    * Tatsuhiko Miyagawa <miyagawa@bulknews.net>
-    * Brian Cassidy <bricas@cpan.org>
+    Brian Cassidy <bricas@cpan.org>
+
+    Tatsuhiko Miyagawa <miyagawa@bulknews.net>
 
 COPYRIGHT AND LICENSE
     Copyright 2007 by Tatsuhiko Miyagawa and Brian Cassidy
