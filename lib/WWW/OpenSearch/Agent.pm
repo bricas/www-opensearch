@@ -57,7 +57,7 @@ sub new {
 
 sub request {
     my $self     = shift;
-    my $request  = shift; ;
+    my $request  = shift;
     my $response = $self->SUPER::request( $request, @_ );
 
     # allow regular HTTP::Requests to flow through
