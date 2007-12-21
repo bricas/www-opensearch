@@ -1,5 +1,9 @@
 use inc::Module::Install 0.68;
 
+if ( -e 'MANIFEST.SKIP' ) {
+    system( 'pod2text lib/WWW/OpenSearch.pm > README' );
+}
+
 name 'WWW-OpenSearch';
 all_from 'lib/WWW/OpenSearch.pm';
 
@@ -10,7 +14,8 @@ requires 'XML::LibXML' => 1.58;
 requires 'Encode';
 requires 'URI';
 requires 'URI::Template';
-requires 'Test::More';
+
+test_requires 'Test::More';
 
 auto_install;
 WriteAll;
