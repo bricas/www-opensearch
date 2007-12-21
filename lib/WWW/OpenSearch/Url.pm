@@ -61,32 +61,32 @@ it under the same terms as Perl itself.
 =cut
 
 sub new {
-    my( $class, %options ) = @_;
-    
+    my ( $class, %options ) = @_;
+
     $options{ method } ||= 'GET';
     $options{ template } = URI::Template->new( $options{ template } );
-    
+
     my $self = $class->SUPER::new( \%options );
 
     return $self;
 }
 
 sub prepare_query {
-    my( $self, $params ) = @_;
+    my ( $self, $params ) = @_;
     my $tmpl = $self->template;
-   
-    for( qw( startIndex startPage ) ) {
+
+    for ( qw( startIndex startPage ) ) {
         $params->{ $_ } = 1 if !defined $params->{ $_ };
     }
-    $params->{ language       } ||= '*';
+    $params->{ language }       ||= '*';
     $params->{ outputEncoding } ||= 'UTF-8';
-    $params->{ inputEncoding  } ||= 'UTF-8';
-    
+    $params->{ inputEncoding }  ||= 'UTF-8';
+
     # fill the uri template
     my $url = $tmpl->process( %$params );
 
     # attempt to handle POST
-    if( $self->method eq 'post' ) {
+    if ( $self->method eq 'post' ) {
         my $post = $self->params;
         for my $key ( keys %$post ) {
             $post->{ $key } =~ s/{(.+)}/$params->{ $1 } || ''/eg;
@@ -94,7 +94,7 @@ sub prepare_query {
 
         return $url, [ %$post ];
     }
-    
+
     return $url;
 }
 

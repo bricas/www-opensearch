@@ -22,8 +22,9 @@ use_ok( 'WWW::OpenSearch::Description' );
     isa_ok( $osd, 'WWW::OpenSearch::Description' );
     is( $osd->shortname, 'Web Search', 'shortname' );
     ok( !defined $osd->longname, 'longname' );
-    is( $osd->description, 'Use Example.com to search the Web.', 'description' );
-    is( $osd->tags, 'example web', 'tags' );
+    is( $osd->description, 'Use Example.com to search the Web.',
+        'description' );
+    is( $osd->tags,    'example web',       'tags' );
     is( $osd->contact, 'admin@example.com', 'contact' );
 
     # count the urls
@@ -68,35 +69,37 @@ use_ok( 'WWW::OpenSearch::Description' );
 
     my $osd = WWW::OpenSearch::Description->new( $description );
     isa_ok( $osd, 'WWW::OpenSearch::Description' );
-    is( $osd->shortname, 'Web Search', 'shortname' );
-    is( $osd->longname, 'Example.com Web Search', 'longname' );
-    is( $osd->description, 'Use Example.com to search the Web.', 'description' );
-    is( $osd->tags, 'example web', 'tags' );
-    is( $osd->contact, 'admin@example.com', 'contact' );
+    is( $osd->shortname, 'Web Search',             'shortname' );
+    is( $osd->longname,  'Example.com Web Search', 'longname' );
+    is( $osd->description, 'Use Example.com to search the Web.',
+        'description' );
+    is( $osd->tags,      'example web',                  'tags' );
+    is( $osd->contact,   'admin@example.com',            'contact' );
     is( $osd->developer, 'Example.com Development Team', 'developer' );
     is( $osd->attribution, '
     Search data &copy; 2005, Example.com, Inc., All Rights Reserved
-  ', 'attribution' );
-    is( $osd->inputencoding, 'UTF-8', 'inputencoding' );
-    is( $osd->outputencoding, 'UTF-8', 'outputencoding' );
-    is( $osd->language, 'en-us', 'language' );
-    is( $osd->adultcontent, 'false', 'adultcontent' );
-    is( $osd->syndicationright, 'open', 'syndicationright' );
+  ', 'attribution'
+    );
+    is( $osd->inputencoding,    'UTF-8', 'inputencoding' );
+    is( $osd->outputencoding,   'UTF-8', 'outputencoding' );
+    is( $osd->language,         'en-us', 'language' );
+    is( $osd->adultcontent,     'false', 'adultcontent' );
+    is( $osd->syndicationright, 'open',  'syndicationright' );
 
     my $queries = $osd->query;
-    is( scalar @$queries, 1, 'number of query objects' );
-    is( $queries->[ 0 ]->role, 'example', 'role' );
-    is( $queries->[ 0 ]->searchTerms, 'cat', 'searchTerms' );
+    is( scalar @$queries,             1,         'number of query objects' );
+    is( $queries->[ 0 ]->role,        'example', 'role' );
+    is( $queries->[ 0 ]->searchTerms, 'cat',     'searchTerms' );
 
     my $images = $osd->image;
-    is( scalar @$images, 2, 'number of image objects' );
-    is( $images->[ 0 ]->height, 64, 'height' );
-    is( $images->[ 0 ]->width, 64, 'width' );
-    is( $images->[ 0 ]->type, 'image/png', 'content type' );
+    is( scalar @$images,        2,           'number of image objects' );
+    is( $images->[ 0 ]->height, 64,          'height' );
+    is( $images->[ 0 ]->width,  64,          'width' );
+    is( $images->[ 0 ]->type,   'image/png', 'content type' );
     is( $images->[ 0 ]->url, 'http://example.com/websearch.png', 'url' );
-    is( $images->[ 1 ]->height, 16, 'height' );
-    is( $images->[ 1 ]->width, 16, 'width' );
-    is( $images->[ 1 ]->type, 'image/vnd.microsoft.icon', 'content type' );
+    is( $images->[ 1 ]->height, 16,                         'height' );
+    is( $images->[ 1 ]->width,  16,                         'width' );
+    is( $images->[ 1 ]->type,   'image/vnd.microsoft.icon', 'content type' );
     is( $images->[ 1 ]->url, 'http://example.com/websearch.ico', 'url' );
 
     # count the urls
@@ -127,19 +130,22 @@ use_ok( 'WWW::OpenSearch::Description' );
 
     my $osd = WWW::OpenSearch::Description->new( $description );
     isa_ok( $osd, 'WWW::OpenSearch::Description' );
-    is( $osd->shortname, 'Electronics', 'shortname' );
-    is( $osd->longname, 'Amazon Electronics', 'longname' );
-    is( $osd->description, 'Search for electronics on Amazon.com.', 'descrpiton' );
-    is( $osd->tags, 'amazon electronics', 'tags' );
-    is( $osd->contact, 'dewitt@unto.net', 'contact' );
-    is( $osd->format, 'http://a9.com/-/spec/opensearchrss/1.0/', 'format' );
-    is( $osd->image, 'http://www.unto.net/search/amazon_electronics.gif', 'image' );
-    is( $osd->samplesearch, 'ipod', 'samplesearch' );
-    is( $osd->developer, 'DeWitt Clinton', 'developer' );
+    is( $osd->shortname, 'Electronics',        'shortname' );
+    is( $osd->longname,  'Amazon Electronics', 'longname' );
+    is( $osd->description, 'Search for electronics on Amazon.com.',
+        'descrpiton' );
+    is( $osd->tags,    'amazon electronics',                      'tags' );
+    is( $osd->contact, 'dewitt@unto.net',                         'contact' );
+    is( $osd->format,  'http://a9.com/-/spec/opensearchrss/1.0/', 'format' );
+    is( $osd->image, 'http://www.unto.net/search/amazon_electronics.gif',
+        'image' );
+    is( $osd->samplesearch, 'ipod',           'samplesearch' );
+    is( $osd->developer,    'DeWitt Clinton', 'developer' );
     is( $osd->attribution, 'Product and search data &copy; 2005, Amazon, Inc.,
-   All Rights Reserved', 'attribution' );
-    is( $osd->syndicationright, 'open', 'syndicationright' );
-    is( $osd->adultcontent, 'false', 'adultcontent' );
+   All Rights Reserved', 'attribution'
+    );
+    is( $osd->syndicationright, 'open',  'syndicationright' );
+    is( $osd->adultcontent,     'false', 'adultcontent' );
 
     # count the urls
     is( $osd->urls, 1, 'urls' );

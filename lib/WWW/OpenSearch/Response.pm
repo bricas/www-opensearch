@@ -104,13 +104,13 @@ it under the same terms as Perl itself.
 sub new {
     my $class    = shift;
     my $response = shift;
-    
+
     my $self = bless $response, $class;
 
     return $self unless $self->is_success;
-    
+
     $self->parse_response;
-    
+
     return $self;
 }
 
@@ -122,7 +122,7 @@ sub parse_response {
 
     return if XML::Feed->errstr;
     $self->feed( $feed );
-    
+
     $self->parse_feed;
 }
 
@@ -133,43 +133,44 @@ sub parse_feed {
     my $feed   = $self->feed;
     my $format = $feed->format;
     my $ns     = $self->request->opensearch_url->ns;
-    
+
     # TODO
     # adapt these for any number of opensearch elements in
     # the feed or in each entry
-    
-    if( my $atom = $feed->{ atom } ) {
+
+    if ( my $atom = $feed->{ atom } ) {
         my $total   = $atom->get( $ns, 'totalResults' );
         my $perpage = $atom->get( $ns, 'itemsPerPage' );
         my $start   = $atom->get( $ns, 'startIndex' );
-        
+
         $pager->total_entries( $total );
         $pager->entries_per_page( $perpage );
-        $pager->current_page( $start ? ( $start - 1 ) / $perpage + 1 : 0 )
+        $pager->current_page( $start ? ( $start - 1 ) / $perpage + 1 : 0 );
     }
-    elsif( my $rss = $feed->{ rss } ) {
-      	if ( my $page = $rss->channel->{ $ns } ) {
-            $pager->total_entries(    $page->{ totalResults } );
+    elsif ( my $rss = $feed->{ rss } ) {
+        if ( my $page = $rss->channel->{ $ns } ) {
+            $pager->total_entries( $page->{ totalResults } );
             $pager->entries_per_page( $page->{ itemsPerPage } );
             my $start = $page->{ startIndex };
-            $pager->current_page( $start ? ( $start - 1 ) / $page->{ itemsPerPage } + 1 : 0 )
+            $pager->current_page(
+                $start ? ( $start - 1 ) / $page->{ itemsPerPage } + 1 : 0 );
         }
-    }    
+    }
     $self->pager( $pager );
 }
 
 sub next_page {
-    my $self  = shift;
+    my $self = shift;
     return $self->_get_page( 'next' );
 }
 
 sub previous_page {
-    my $self  = shift;
+    my $self = shift;
     return $self->_get_page( 'previous' );
 }
 
 sub _get_page {
-    my( $self, $direction ) = @_;    
+    my ( $self, $direction ) = @_;
     my $pager       = $self->pager;
     my $pagermethod = "${direction}_page";
     my $page        = $pager->$pagermethod;
@@ -178,39 +179,41 @@ sub _get_page {
     my $params;
     my $osu = $self->request->opensearch_url;
 
-#    this code is too fragile -- deparse depends on the order of query
-#    params and the like. best just to use the last query params and
-#    do the paging from there.
-#
-#    if( lc $osu->method ne 'post' ) { # force query build on POST
-#        my $link = $self->_get_link( $direction );
-#        if( $link ) {
-#            $params = $osu->deparse( $link );
-#        }
-#    }
+    #    this code is too fragile -- deparse depends on the order of query
+    #    params and the like. best just to use the last query params and
+    #    do the paging from there.
+    #
+    #    if( lc $osu->method ne 'post' ) { # force query build on POST
+    #        my $link = $self->_get_link( $direction );
+    #        if( $link ) {
+    #            $params = $osu->deparse( $link );
+    #        }
+    #    }
 
     # rebuild the query
-    if( !$params ) {
+    if ( !$params ) {
         $params = $self->request->opensearch_params;
 
         # handle paging via a page #
         $params->{ startPage } = $page;
 
         # handle paging via an index
-        if( exists $params->{ startIndex } ) {
+        if ( exists $params->{ startIndex } ) {
+
             # start index is pre-existing
-            if( $params->{ startIndex } ) {
-                if( $direction eq 'previous' ) {
-                    $params->{ startIndex } -= $pager->entries_per_page
+            if ( $params->{ startIndex } ) {
+                if ( $direction eq 'previous' ) {
+                    $params->{ startIndex } -= $pager->entries_per_page;
                 }
                 else {
                     $params->{ startIndex } += $pager->entries_per_page;
                 }
             }
+
             # start index did not exist previously
             else {
-                if( $direction eq 'previous' ) {
-                    $params->{ startIndex } = 1
+                if ( $direction eq 'previous' ) {
+                    $params->{ startIndex } = 1;
                 }
                 else {
                     $params->{ startIndex } = $pager->entries_per_page + 1;
@@ -221,19 +224,17 @@ sub _get_page {
     }
 
     my $agent = WWW::OpenSearch::Agent->new;
-    return $agent->search( WWW::OpenSearch::Request->new(
-        $osu, $params
-    ) );
+    return $agent->search( WWW::OpenSearch::Request->new( $osu, $params ) );
 }
 
 sub _get_link {
     my $self = shift;
     my $type = shift;
     my $feed = $self->feed->{ atom };
-    
+
     return unless $feed;
-    
-    for( $feed->link ) {
+
+    for ( $feed->link ) {
         return $_->href if $_->rel eq $type;
     }
 

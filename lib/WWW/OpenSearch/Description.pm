@@ -140,7 +140,7 @@ it under the same terms as Perl itself.
 
 =cut
 
-for( @columns ) {
+for ( @columns ) {
     no strict 'refs';
     my $col = lc;
     *$_ = \&$col;
@@ -149,11 +149,11 @@ for( @columns ) {
 sub new {
     my $class = shift;
     my $xml   = shift;
-    
-    my $self  = $class->SUPER::new;
-    
-    eval{ $self->load( $xml ); } if $xml;
-    if( $@ ) {
+
+    my $self = $class->SUPER::new;
+
+    eval { $self->load( $xml ); } if $xml;
+    if ( $@ ) {
         croak "Error while parsing Description XML: $@";
     }
 
@@ -163,17 +163,18 @@ sub new {
 sub load {
     my $self = shift;
     my $xml  = shift;
-    
+
     my $parser   = XML::LibXML->new;
     my $doc      = $parser->parse_string( $xml );
     my $element  = $doc->documentElement;
     my $nodename = $element->nodeName;
 
-    croak "Node should be OpenSearchDescription: $nodename" if $nodename ne 'OpenSearchDescription';
+    croak "Node should be OpenSearchDescription: $nodename"
+        if $nodename ne 'OpenSearchDescription';
 
     my $ns = $element->getNamespace->value;
     my $version;
-    if( $ns eq 'http://a9.com/-/spec/opensearchdescription/1.0/' ) {
+    if ( $ns eq 'http://a9.com/-/spec/opensearchdescription/1.0/' ) {
         $self->ns( 'http://a9.com/-/spec/opensearchrss/1.0/' );
         $version = '1.0';
     }
@@ -184,10 +185,18 @@ sub load {
     $self->version( $version );
 
     for my $column ( @columns ) {
-        my $node = $doc->documentElement->getChildrenByTagName( $column ) or next;
-        if( $column eq 'Url' ) {
-            if( $version eq '1.0' ) {
-                $self->Url( [ WWW::OpenSearch::Url->new( template => $node->string_value, type => 'application/rss+xml', ns => $self->ns ) ] );
+        my $node = $doc->documentElement->getChildrenByTagName( $column )
+            or next;
+        if ( $column eq 'Url' ) {
+            if ( $version eq '1.0' ) {
+                $self->Url(
+                    [   WWW::OpenSearch::Url->new(
+                            template => $node->string_value,
+                            type     => 'application/rss+xml',
+                            ns       => $self->ns
+                        )
+                    ]
+                );
                 next;
             }
 
@@ -195,43 +204,57 @@ sub load {
             for my $urlnode ( $node->get_nodelist ) {
                 my $type = $urlnode->getAttributeNode( 'type' )->value;
                 my $url  = $urlnode->getAttributeNode( 'template' )->value;
-                $url =~ s/\?}/}/g; # optional
+                $url =~ s/\?}/}/g;    # optional
                 my $method = $urlnode->getAttributeNode( 'method' );
                 $method = $method->value if $method;
 
                 my %params;
-                for( $urlnode->getChildrenByTagName( 'Param' ) ) {
+                for ( $urlnode->getChildrenByTagName( 'Param' ) ) {
                     my $param = $_->getAttributeNode( 'name' )->value;
                     my $value = $_->getAttributeNode( 'value' )->value;
-                    $value    =~ s/\?}/}/g; # optional
+                    $value =~ s/\?}/}/g;    # optional
                     $params{ $param } = $value;
                 }
 
-                push @url, WWW::OpenSearch::Url->new( template => $url, type => $type, method => $method, params => \%params, ns => $self->ns );
+                push @url,
+                    WWW::OpenSearch::Url->new(
+                    template => $url,
+                    type     => $type,
+                    method   => $method,
+                    params   => \%params,
+                    ns       => $self->ns
+                    );
             }
             $self->Url( \@url );
         }
-        elsif( $version eq '1.1' and $column eq 'Query' ) {
+        elsif ( $version eq '1.1' and $column eq 'Query' ) {
             my $queries = $self->query || [];
 
             for my $node ( $node->get_nodelist ) {
-                my $query = WWW::OpenSearch::Query->new( {
-                    map { $_ => $node->getAttributeNode( $_ )->value } qw( role searchTerms )
-                } );
+                my $query = WWW::OpenSearch::Query->new(
+                    {   map { $_ => $node->getAttributeNode( $_ )->value }
+                            qw( role searchTerms )
+                    }
+                );
 
                 push @$queries, $query;
             }
 
             $self->query( $queries );
         }
-        elsif( $version eq '1.1' and $column eq 'Image' ) {
+        elsif ( $version eq '1.1' and $column eq 'Image' ) {
             my $images = $self->image || [];
 
             for my $node ( $node->get_nodelist ) {
-                my $image = WWW::OpenSearch::Image->new( {
-                    ( map { my $attr = $node->getAttributeNode( $_ ); $attr ? ($_ => $attr->value) : () } qw( height width type ) ),
-                    url => $node->string_value
-                } );
+                my $image = WWW::OpenSearch::Image->new(
+                    {   (   map {
+                                my $attr = $node->getAttributeNode( $_ );
+                                $attr ? ( $_ => $attr->value ) : ()
+                                } qw( height width type )
+                        ),
+                        url => $node->string_value
+                    }
+                );
 
                 push @$images, $image;
             }
@@ -246,8 +269,9 @@ sub load {
 
 sub get_best_url {
     my $self = shift;
-    
-    return $self->get_url_by_type( 'application/atom+xml' )
+
+    return
+           $self->get_url_by_type( 'application/atom+xml' )
         || $self->get_url_by_type( 'application/rss+xml' )
         || $self->get_url_by_type( 'text/xml' )
         || $self->url->[ 0 ];
@@ -256,11 +280,11 @@ sub get_best_url {
 sub get_url_by_type {
     my $self = shift;
     my $type = shift;
-    
-    for( $self->urls ) {
+
+    for ( $self->urls ) {
         return $_ if $_->type eq $type;
-    };
-    
+    }
+
     return;
 }
 

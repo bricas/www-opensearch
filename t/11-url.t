@@ -20,12 +20,15 @@ use_ok( 'WWW::OpenSearch::Url' );
     is( $osd->ns, 'http://a9.com/-/spec/opensearch/1.1/', 'namespace' );
     is( $osd->urls, 1, 'number of urls' );
 
-    my( $url ) = $osd->urls;
+    my ( $url ) = $osd->urls;
     isa_ok( $url, 'WWW::OpenSearch::Url' );
     is( $url->type, 'application/rss+xml', 'content type' );
     is( lc $url->method, 'get', 'method' );
-    is( $url->template, 'http://example.com/?q={searchTerms}&pw={startPage}&format=rss', 'template' );
-    my $result = $url->prepare_query( { searchTerms => 'x', startPage => 1 } );
+    is( $url->template,
+        'http://example.com/?q={searchTerms}&pw={startPage}&format=rss',
+        'template' );
+    my $result
+        = $url->prepare_query( { searchTerms => 'x', startPage => 1 } );
     is( $result, 'http://example.com/?q=x&pw=1&format=rss', 'prepare_query' );
 }
 
@@ -57,7 +60,9 @@ use_ok( 'WWW::OpenSearch::Url' );
         isa_ok( $url, 'WWW::OpenSearch::Url' );
         is( $url->type, 'application/rss+xml', 'content type' );
         is( lc $url->method, 'get', 'method' );
-        is( $url->template, 'http://example.com/?q={searchTerms}&pw={startPage}&format=rss', 'template' );
+        is( $url->template,
+            'http://example.com/?q={searchTerms}&pw={startPage}&format=rss',
+            'template' );
     }
 
     {
@@ -65,20 +70,45 @@ use_ok( 'WWW::OpenSearch::Url' );
         isa_ok( $url, 'WWW::OpenSearch::Url' );
         is( $url->type, 'application/atom+xml', 'content type' );
         is( lc $url->method, 'get', 'method' );
-        is( $url->template, 'http://example.com/?q={searchTerms}&pw={startPage}&format=atom', 'template' );
+        is( $url->template,
+            'http://example.com/?q={searchTerms}&pw={startPage}&format=atom',
+            'template'
+        );
     }
 
     {
         my $url = $osd->url->[ 2 ];
         isa_ok( $url, 'WWW::OpenSearch::Url' );
-        is( $url->type, 'text/html', 'content type' );
-        is( lc $url->method, 'post', 'method' );
-        is( $url->template, 'https://intranet/search?format=html', 'template' );
-        is_deeply( $url->params, { s => '{searchTerms}', o => '{startIndex}', c => '{itemsPerPage}', l => '{language}' }, 'params' );
-        my( $result, $post ) = $url->prepare_query( { searchTerms => 'x', startIndex => '1', itemsPerPage => 1, language => 'en' } );
-        is( $result, 'https://intranet/search?format=html', 'prepare_query (uri)' );
+        is( $url->type,      'text/html', 'content type' );
+        is( lc $url->method, 'post',      'method' );
+        is( $url->template, 'https://intranet/search?format=html',
+            'template' );
+        is_deeply(
+            $url->params,
+            {   s => '{searchTerms}',
+                o => '{startIndex}',
+                c => '{itemsPerPage}',
+                l => '{language}'
+            },
+            'params'
+        );
+        my ( $result, $post ) = $url->prepare_query(
+            {   searchTerms  => 'x',
+                startIndex   => '1',
+                itemsPerPage => 1,
+                language     => 'en'
+            }
+        );
+        is( $result,
+            'https://intranet/search?format=html',
+            'prepare_query (uri)'
+        );
         $post = { @$post };
-        is_deeply( $post, { s => 'x', o => 1, c => 1, l => 'en' }, 'prepare_query (params)' );
+        is_deeply(
+            $post,
+            { s => 'x', o => 1, c => 1, l => 'en' },
+            'prepare_query (params)'
+        );
     }
 }
 
@@ -95,9 +125,12 @@ use_ok( 'WWW::OpenSearch::Url' );
     is( $osd->ns, 'http://a9.com/-/spec/opensearchrss/1.0/', 'namespace' );
     is( $osd->urls, 1, 'number of urls' );
 
-    my( $url ) = $osd->urls;
+    my ( $url ) = $osd->urls;
     isa_ok( $url, 'WWW::OpenSearch::Url' );
     is( lc $url->method, 'get', 'method' );
-    is( $url->template, 'http://www.unto.net/aws?q={searchTerms}&searchindex=Electronics&flavor=osrss&itempage={startPage}', 'template' );
+    is( $url->template,
+        'http://www.unto.net/aws?q={searchTerms}&searchindex=Electronics&flavor=osrss&itempage={startPage}',
+        'template'
+    );
 }
 

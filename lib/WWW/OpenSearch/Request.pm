@@ -53,12 +53,12 @@ it under the same terms as Perl itself.
 =cut
 
 sub new {
-    my( $class, $os_url, $params ) = @_;
+    my ( $class, $os_url, $params ) = @_;
 
-    my( $uri, $post ) = $os_url->prepare_query( $params );
+    my ( $uri, $post ) = $os_url->prepare_query( $params );
 
     my $self;
-    if( lc $os_url->method eq 'post' ) {
+    if ( lc $os_url->method eq 'post' ) {
         $self = HTTP::Request::Common::POST( $uri, $post );
         bless $self, $class;
     }
@@ -73,7 +73,7 @@ sub new {
 }
 
 sub clone {
-    my $self  = shift;
+    my $self = shift;
     my $clone = bless $self->SUPER::clone, ref( $self );
 
     $clone->opensearch_url( $self->opensearch_url );

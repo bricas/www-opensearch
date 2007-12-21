@@ -10,7 +10,7 @@ use WWW::OpenSearch::Agent;
 use WWW::OpenSearch::Request;
 use WWW::OpenSearch::Description;
 
-use Encode (); 
+use Encode ();
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
@@ -111,42 +111,44 @@ it under the same terms as Perl itself.
 =cut
 
 sub new {
-    my( $class, $url ) = @_;
-    
+    my ( $class, $url ) = @_;
+
     croak( "No OpenSearch Description url provided" ) unless $url;
-    
+
     my $self = $class->SUPER::new;
 
     $self->description_url( $url );
     $self->agent( WWW::OpenSearch::Agent->new() );
 
     $self->fetch_description;
-    
+
     return $self;
 }
 
 sub fetch_description {
-    my( $self, $url ) = @_;
+    my ( $self, $url ) = @_;
     $url ||= $self->description_url;
     $self->description_url( $url );
     my $response = $self->agent->get( $url );
-    
-    unless( $response->is_success ) {
+
+    unless ( $response->is_success ) {
         croak "Error while fetching $url: " . $response->status_line;
     }
 
-    $self->description( WWW::OpenSearch::Description->new( $response->content ) );
+    $self->description(
+        WWW::OpenSearch::Description->new( $response->content ) );
 }
 
 sub search {
-    my( $self, $query, $params, $url ) = @_;
+    my ( $self, $query, $params, $url ) = @_;
 
-    $params ||= { };
+    $params ||= {};
     $params->{ searchTerms } = $query;
-    Encode::_utf8_off( $params->{ searchTerms } ); 
-    
+    Encode::_utf8_off( $params->{ searchTerms } );
+
     $url ||= $self->description->get_best_url;
-    return $self->agent->search( WWW::OpenSearch::Request->new( $url, $params ) );
+    return $self->agent->search(
+        WWW::OpenSearch::Request->new( $url, $params ) );
 }
 
 1;

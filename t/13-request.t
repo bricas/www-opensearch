@@ -27,7 +27,8 @@ use_ok( 'WWW::OpenSearch::Request' );
     my $osd = WWW::OpenSearch::Description->new( $description );
 
     {
-        my $req = WWW::OpenSearch::Request->new( $osd->url->[ 2 ], { searchTerms => 'iPod' } );
+        my $req = WWW::OpenSearch::Request->new( $osd->url->[ 2 ],
+            { searchTerms => 'iPod' } );
         isa_ok( $req, 'WWW::OpenSearch::Request' );
         is( lc $req->method, 'post', 'method' );
         is( $req->uri, 'https://intranet/search?format=html', 'uri' );
@@ -35,7 +36,8 @@ use_ok( 'WWW::OpenSearch::Request' );
     }
 
     {
-        my $req = WWW::OpenSearch::Request->new( $osd->url->[ 1 ], { searchTerms => 'iPod' } );
+        my $req = WWW::OpenSearch::Request->new( $osd->url->[ 1 ],
+            { searchTerms => 'iPod' } );
         isa_ok( $req, 'WWW::OpenSearch::Request' );
         is( lc $req->method, 'get', 'method' );
         is( $req->uri, 'http://example.com/?q=iPod&pw=1&format=atom', 'uri' );
