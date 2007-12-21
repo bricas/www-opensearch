@@ -1,5 +1,8 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.13    Fri Dec 21 2007
+        - Fix pod coverage (Ian Beckwith)
+
 0.12    Tue May 01 2007
         - switch from ||= to a "defined" idiom for some params
         - switch to Module::Install

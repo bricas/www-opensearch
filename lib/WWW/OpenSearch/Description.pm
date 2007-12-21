@@ -89,6 +89,8 @@ whose type is equal to $type.
 
 =head2 AdultContent( )
 
+=head2 Attribution( )
+
 =head2 Contact( )
 
 =head2 Description( )
@@ -97,9 +99,15 @@ whose type is equal to $type.
 
 =head2 Format( )
 
+=head2 InputEncoding( )
+
 =head2 Image( )
 
+=head2 Language( )
+
 =head2 LongName( )
+
+=head2 OutputEncoding( )
 
 =head2 Query( )
 

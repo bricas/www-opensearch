@@ -1,4 +1,4 @@
-use inc::Module::Install 0.65;
+use inc::Module::Install 0.68;
 
 name 'WWW-OpenSearch';
 all_from 'lib/WWW/OpenSearch.pm';
