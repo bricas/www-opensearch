@@ -14,7 +14,7 @@ use Encode ();
 
 __PACKAGE__->mk_accessors( qw( description_url agent description ) );
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 =head1 NAME
 
@@ -103,7 +103,7 @@ Tatsuhiko Miyagawa E<lt>miyagawa@bulknews.netE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2007 by Tatsuhiko Miyagawa and Brian Cassidy
+Copyright 2008 by Tatsuhiko Miyagawa and Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

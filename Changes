@@ -1,5 +1,8 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.14    Thu Apr 17 2008
+        - Handle broken LWP 5.810 in Makefile.PL
+
 0.13    Fri Dec 21 2007
         - Fix pod coverage (Ian Beckwith)
 
