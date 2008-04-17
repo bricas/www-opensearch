@@ -7,8 +7,11 @@ if ( -e 'MANIFEST.SKIP' ) {
 name 'WWW-OpenSearch';
 all_from 'lib/WWW/OpenSearch.pm';
 
+# handle broken LWP 5.810
+my $broken_lwp = eval { require LWP; LWP->VERSION eq '5.810'; };
+
 requires 'Data::Page'  => 2.00;
-requires 'LWP'         => 5.60;
+requires 'LWP'         => ( $broken_lwp ? '5.811' : '5.60' );
 requires 'XML::Feed'   => 0.08;
 requires 'XML::LibXML' => 1.58;
 requires 'Encode';
