@@ -1,4 +1,4 @@
-use inc::Module::Install 0.71;
+use inc::Module::Install 0.91;
 
 if ( -e 'MANIFEST.SKIP' ) {
     system( 'pod2text lib/WWW/OpenSearch.pm > README' );
@@ -22,5 +22,6 @@ requires 'URI::Template';
 
 test_requires 'Test::More';
 
-auto_install;
+repository 'http://github.com/bricas/www-opensearch/tree/master';
+
 WriteAll;

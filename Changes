@@ -1,5 +1,8 @@
 Revision history for Perl extension WWW::OpenSearch
 
+0.15    Thu Nov 19 2009
+        - repackaged with a new version of Module::Install
+
 0.14    Thu Apr 17 2008
         - Handle broken LWP 5.810 in Makefile.PL
 

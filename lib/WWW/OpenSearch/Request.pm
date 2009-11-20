@@ -45,7 +45,7 @@ WWW::OpenSearch::Request - Encapsulate an opensearch request
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 by Tatsuhiko Miyagawa and Brian Cassidy
+Copyright 2005-2009 by Tatsuhiko Miyagawa and Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
