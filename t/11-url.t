@@ -24,7 +24,7 @@ use_ok( 'WWW::OpenSearch::Url' );
     isa_ok( $url, 'WWW::OpenSearch::Url' );
     is( $url->type, 'application/rss+xml', 'content type' );
     is( lc $url->method, 'get', 'method' );
-    is( $url->template,
+    is( $url->template->template,
         'http://example.com/?q={searchTerms}&pw={startPage}&format=rss',
         'template' );
     my $result
@@ -60,7 +60,7 @@ use_ok( 'WWW::OpenSearch::Url' );
         isa_ok( $url, 'WWW::OpenSearch::Url' );
         is( $url->type, 'application/rss+xml', 'content type' );
         is( lc $url->method, 'get', 'method' );
-        is( $url->template,
+        is( $url->template->template,
             'http://example.com/?q={searchTerms}&pw={startPage}&format=rss',
             'template' );
     }
@@ -70,7 +70,7 @@ use_ok( 'WWW::OpenSearch::Url' );
         isa_ok( $url, 'WWW::OpenSearch::Url' );
         is( $url->type, 'application/atom+xml', 'content type' );
         is( lc $url->method, 'get', 'method' );
-        is( $url->template,
+        is( $url->template->template,
             'http://example.com/?q={searchTerms}&pw={startPage}&format=atom',
             'template'
         );
@@ -81,7 +81,7 @@ use_ok( 'WWW::OpenSearch::Url' );
         isa_ok( $url, 'WWW::OpenSearch::Url' );
         is( $url->type,      'text/html', 'content type' );
         is( lc $url->method, 'post',      'method' );
-        is( $url->template, 'https://intranet/search?format=html',
+        is( $url->template->template, 'https://intranet/search?format=html',
             'template' );
         is_deeply(
             $url->params,
@@ -128,7 +128,7 @@ use_ok( 'WWW::OpenSearch::Url' );
     my ( $url ) = $osd->urls;
     isa_ok( $url, 'WWW::OpenSearch::Url' );
     is( lc $url->method, 'get', 'method' );
-    is( $url->template,
+    is( $url->template->template,
         'http://www.unto.net/aws?q={searchTerms}&searchindex=Electronics&flavor=osrss&itempage={startPage}',
         'template'
     );
