@@ -32,7 +32,7 @@ use_ok( 'WWW::OpenSearch::Request' );
         isa_ok( $req, 'WWW::OpenSearch::Request' );
         is( lc $req->method, 'post', 'method' );
         is( $req->uri, 'https://intranet/search?format=html', 'uri' );
-        is( $req->content, 'l=*&c=&s=iPod&o=1', 'content' );
+        is( _sort_result( $req->content ), 'c=&l=*&o=1&s=iPod', 'content' );
     }
 
     {
@@ -42,4 +42,11 @@ use_ok( 'WWW::OpenSearch::Request' );
         is( lc $req->method, 'get', 'method' );
         is( $req->uri, 'http://example.com/?q=iPod&pw=1&format=atom', 'uri' );
     }
+}
+
+sub _sort_result {
+    my $s = shift;
+    return join( '&',
+        sort { substr( $a, 0, 1 ) cmp substr( $b, 0, 1 ) }
+            split( /\&/, $s ) );
 }
