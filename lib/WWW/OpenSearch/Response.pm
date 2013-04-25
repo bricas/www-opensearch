@@ -15,7 +15,7 @@ __PACKAGE__->mk_accessors( qw( feed pager ) );
 =head1 NAME
 
 WWW::OpenSearch::Response - Encapsulate a response received from
-an A9 OpenSearch compatible engine
+an OpenSearch compatible engine
 
 =head1 SYNOPSIS
     
@@ -39,8 +39,8 @@ an A9 OpenSearch compatible engine
 =head1 DESCRIPTION
 
 WWW::OpenSearch::Response is a module designed to encapsulate a
-response received from an A9 OpenSearch compatible engine.
-See http://opensearch.a9.com/spec/1.1/response/ for details.
+response received from an OpenSearch compatible engine.
+See http://www.opensearch.org/Specifications/OpenSearch/1.1#OpenSearch_response_elements for details.
 
 =head1 CONSTRUCTOR
 

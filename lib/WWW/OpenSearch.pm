@@ -18,7 +18,7 @@ our $VERSION = '0.17';
 
 =head1 NAME
 
-WWW::OpenSearch - Search A9 OpenSearch compatible engines
+WWW::OpenSearch - Search OpenSearch compatible engines
 
 =head1 SYNOPSIS
 
@@ -44,8 +44,8 @@ WWW::OpenSearch - Search A9 OpenSearch compatible engines
 
 =head1 DESCRIPTION
 
-WWW::OpenSearch is a module to search A9's OpenSearch compatible search
-engines. See http://opensearch.a9.com/ for details.
+WWW::OpenSearch is a module to search OpenSearch compatible search
+engines. See http://www.opensearch.org/ for details.
 
 =head1 CONSTRUCTOR
 
@@ -80,7 +80,7 @@ search parameters. Valid search parameters include:
 
 =back
 
-See http://opensearch.a9.com/spec/1.1/response/#elements for details.
+See http://www.opensearch.org/Specifications/OpenSearch/1.1#OpenSearch_response_elements for details.
 
 =head2 do_search( $url [, $method] )
 

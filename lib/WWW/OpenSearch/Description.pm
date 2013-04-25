@@ -24,7 +24,7 @@ __PACKAGE__->mk_accessors( qw( version ns ), map { lc } @columns );
 =head1 NAME
 
 WWW::OpenSearch::Description - Encapsulate an OpenSearch Description
-provided by an A9 OpenSearch compatible engine
+provided by an OpenSearch compatible engine
 
 =head1 SYNOPSIS
     
@@ -40,8 +40,8 @@ provided by an A9 OpenSearch compatible engine
 =head1 DESCRIPTION
 
 WWW::OpenSearch::Description is a module designed to encapsulate an
-OpenSearch Description provided by an A9 OpenSearch compatible engine.
-See http://opensearch.a9.com/spec/1.1/description/ for details.
+OpenSearch Description provided by an OpenSearch compatible engine.
+See http://www.opensearch.org/Specifications/OpenSearch/1.1#OpenSearch_description_document for details.
 
 =head1 CONSTRUCTOR
 
